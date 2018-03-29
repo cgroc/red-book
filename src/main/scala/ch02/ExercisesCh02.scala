@@ -30,4 +30,17 @@ object ExercisesCh02 {
     else
       ordered(as.head, as.tail.head) && isSorted(as.tail, ordered)
 
+  def partial1[A, B, C](a: A, f: (A, B) => C): B => C =
+    b => f(a, b)
+
+  def curry[A, B, C](f: (A, B) => C): A => (B => C) =
+    a => b => f(a, b)
+  // alternatively a => partial1(a, f)... which is kind of how I figured it out
+
+  def uncurry[A, B, C](f: A => B => C): (A, B) => C =
+    (a, b) => f(a)(b)
+  // this compiles but seems like cheating somehow?
+
+  def compose[A, B, C](f: B => C, g: A => B): A => C =
+    a => f(g(a))
 }
