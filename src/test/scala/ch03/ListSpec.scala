@@ -29,4 +29,20 @@ class ListSpec extends WordSpec with Matchers {
       setHead("We", strings) shouldBe Cons("We", Cons("Like", Cons("Chips", Nil)))
     }
   }
+
+  "List.drop" should {
+
+    "Drop a specified number of elements from a list" in {
+      val strings = Cons("I", Cons("Really", Cons("Like", Cons("Chips", Nil))))
+      drop(strings, 3) shouldBe Cons("Chips", Nil)
+    }
+  }
+
+  "List.dropWhile" should {
+
+    "Drop elements from the front of a list while they meet a predicate" in {
+      val numbers = Cons(2, Cons(4, Cons(6, Cons(3, Nil))))
+      dropWhile(numbers, (n: Int) => n % 2 == 0) shouldBe Cons(3, Nil)
+    }
+  }
 }

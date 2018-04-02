@@ -1,5 +1,7 @@
 package ch03
 
+import scala.annotation.tailrec
+
 
 sealed trait List[+A]
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
@@ -38,5 +40,20 @@ object List {
     as match {
       case Nil => Nil //is this weird? Maybe it should be an exception?
       case Cons(head, tail) => Cons(a, tail)
+    }
+
+  @tailrec
+  def drop[A](l: List[A], n: Int): List[A] =
+    if(n < 1)
+      l
+    else
+      drop(tail(l), n - 1)
+
+  @tailrec
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] =
+    l match {
+      case Nil => Nil
+      case Cons(head, tail) if f(head) => dropWhile(tail, f)
+      case _ => l
     }
 }
