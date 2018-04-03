@@ -56,4 +56,20 @@ object List {
       case Cons(head, tail) if f(head) => dropWhile(tail, f)
       case _ => l
     }
+
+  def append[A](l1: List[A], l2: List[A]): List[A] =
+    l1 match {
+      case Nil => l2
+      case Cons(head, tail) => Cons(head, append(tail, l2))
+    }
+
+  def init[A](l: List[A]): List[A] = {
+    def loop(l1: List[A], l2: List[A]): List[A] =
+      l1 match {
+        case Nil => Nil
+        case Cons(head, Nil) => Nil
+        case Cons(head, tail) => Cons(head, loop(tail, l2)) // is this right? I don't think so
+      }
+    loop(l, Nil)
+  }
 }
