@@ -45,4 +45,22 @@ class ListSpec extends WordSpec with Matchers {
       dropWhile(numbers, (n: Int) => n % 2 == 0) shouldBe Cons(3, Nil)
     }
   }
+
+  "List.init" should {
+
+    "Return Nil for an empty list" in {
+      val l = Nil
+      init(l) shouldBe Nil
+    }
+
+    "Return Nil for a list with one element" in {
+      val l = Cons("Hello", Nil)
+      init(l) shouldBe Nil
+    }
+
+    "Return the first three elements for a 4 element list" in {
+      val l = Cons("Hello", Cons("I", Cons("Like", Cons("Gravy", Nil))))
+      init(l) shouldBe Cons("Hello", Cons("I", Cons("Like", Nil)))
+    }
+  }
 }
