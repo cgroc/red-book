@@ -9,7 +9,12 @@ object Notes {
       (v1 + v2) * v1
   }
 
+  object Bill extends Function2[Int, Int, Int] {
+    override def apply(v1: Int, v2: Int): Int = v1 + v2
+  }
+
   def main(args: Array[String]): Unit = {
     println(myGroovyFunction(3, 2))
+    println(Bill(3, 2))
   }
 }
