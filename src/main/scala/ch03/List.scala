@@ -69,4 +69,16 @@ object List {
       case Cons(head, Nil) => Nil
       case Cons(head, tail) => Cons(head, init(tail))
     }
+
+  def foldRight[A, B](as: List[A], unit: B)(f: (A, B) => B): B =
+    as match {
+      case Nil => unit
+      case Cons(head, tail) => f(head, foldRight(tail, unit)(f))
+    }
+
+  def sum2(ints: List[Int]): Int = foldRight[Int, Int](ints, 0)(_ + _)
+
+  def product2(ints: List[Int]): Int = foldRight[Int, Int](ints, 1)(_ * _)
+
+
 }

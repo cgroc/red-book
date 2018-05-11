@@ -63,4 +63,46 @@ class ListSpec extends WordSpec with Matchers {
       init(l) shouldBe Cons("Hello", Cons("I", Cons("Like", Nil)))
     }
   }
+
+  "List.sum2" should  {
+
+    "return 0 for an empty list" in {
+
+      val l: List[Int] = Nil
+      sum2(l) shouldBe 0
+    }
+
+    "return the correct value for a list with one int" in {
+
+      val l: List[Int] = Cons(5, Nil)
+      sum2(l) shouldBe 5
+    }
+
+    "return the correct value for a list with several elements" in {
+
+      val ints = Cons(1, Cons(2, Cons(3, Nil)))
+      sum2(ints) shouldBe 6
+    }
+  }
+
+  "List.product2" should  {
+
+    "return 0 for an empty list" in {
+
+      val l: List[Int] = Nil
+      product2(l) shouldBe 1 //TODO: Standard scala foldRight also behaves this way, means you have to be careful with empty sequences?
+    }
+
+    "return the correct value for a list with one int" in {
+
+      val l: List[Int] = Cons(5, Nil)
+      product2(l) shouldBe 5
+    }
+
+    "return the correct value for a list with several elements" in {
+
+      val ints = Cons(1, Cons(2, Cons(4, Nil)))
+      product2(ints) shouldBe 8
+    }
+  }
 }
