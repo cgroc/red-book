@@ -105,4 +105,63 @@ class ListSpec extends WordSpec with Matchers {
       product2(ints) shouldBe 8
     }
   }
+
+  "List.length" should {
+
+    "return 0 for an empty list" in {
+
+      val empty: List[String] = Nil
+      listLength(empty) shouldBe 0
+    }
+
+    "return 4 for a list of 4 Strings" in {
+
+      val l: List[String] = Cons("Hello", Cons("I", Cons("Like", Cons("Gravy", Nil))))
+      listLength(l) shouldBe 4
+    }
+
+    "also return the correct length for a list of doubles" in {
+
+      val l: List[Double] = Cons(3.2, Cons(1.7, Cons(4.8, Cons(0.008, Nil))))
+      listLength(l) shouldBe 4
+    }
+  }
+
+  "List.foldLeft" should {
+
+    "return 0 for the sum of an empty list of ints" in {
+
+      val empty: List[Int] = Nil
+      foldLeft(empty, 0)(_ + _) shouldBe 0
+    }
+
+    "return the correct value for a sum of doubles" in {
+
+      val doubles: List[Double] = Cons(2.0, Cons(3.0, Nil))
+      foldLeft(doubles, 1.0)(_ * _) shouldBe 6.0
+    }
+  }
+
+  "Fold operations" should {
+
+    "Operate on the list elements in the right order" in {
+
+      val doubles: List[Double] = Cons(2.0, Cons(4.0, Nil))
+      foldRight(doubles, 1.0)(_ / _) shouldBe 0.5 // (2.0 / 4.0 / 1.0) = 0.5
+      foldLeft(doubles, 1.0)(_ / _) shouldBe 0.125 // (1.0 / 4.0 / 2.0) = 0.125
+    }
+  }
+
+  "FoldRight" should {
+
+    "Operate the same way for each implementation" in {
+
+      val doubles: List[Double] = Cons(2.0, Cons(4.0, Nil))
+      foldRight(doubles, 1.0)(_ / _) shouldBe foldRight2(doubles, 1.0)(_ / _)
+      foldRight(doubles, 1.0)(_ * _) shouldBe foldRight2(doubles, 1.0)(_ * _)
+
+      val strings: List[String] = Cons("I", Cons("Am", Cons("A", Cons("Mole", Nil))))
+      foldRight(strings, "")(_ + _) shouldBe foldRight2(strings, "")(_ + _)
+    }
+  }
 }

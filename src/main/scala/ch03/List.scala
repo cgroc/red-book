@@ -80,5 +80,22 @@ object List {
 
   def product2(ints: List[Int]): Int = foldRight[Int, Int](ints, 1)(_ * _)
 
+  def listLength[A](as: List[A]): Int = foldRight(as, 0)((_, b) => b + 1)
+
+  def foldLeft[A,B](l: List[A], unit: B)(combine: (B, A) => B): B = {
+    @tailrec
+    def loop[A, B](as: List[A], z: B, acc: B)(f: (B, A) => B): B =
+      as match {
+        case Nil => acc
+        case Cons(head, tail) => loop(tail, z, f(acc, head))(f)
+      }
+    loop(l, unit, unit)(combine)
+  }
+
+  def foldRight2[A, B](as: List[A], unit: B)(f: (A, B) => B): B = {
+    val reverse = foldLeft(as, Nil: List[A])((b, a) => Cons(a, b))
+    foldLeft(reverse, unit)((b, a) => f(a, b))
+  }
+
 
 }
