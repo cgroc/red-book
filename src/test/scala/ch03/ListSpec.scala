@@ -106,7 +106,7 @@ class ListSpec extends WordSpec with Matchers {
     }
   }
 
-  "List.length" should {
+  "List.listLength" should {
 
     "return 0 for an empty list" in {
 
@@ -162,6 +162,94 @@ class ListSpec extends WordSpec with Matchers {
 
       val strings: List[String] = Cons("I", Cons("Am", Cons("A", Cons("Mole", Nil))))
       foldRight(strings, "")(_ + _) shouldBe foldRight2(strings, "")(_ + _)
+    }
+  }
+
+  "List.listLengthLeft" should {
+
+    "return 0 for an empty list" in {
+
+      val empty: List[String] = Nil
+      listLengthLeft(empty) shouldBe 0
+    }
+
+    "return 4 for a list of 4 Strings" in {
+
+      val l: List[String] = Cons("Hello", Cons("I", Cons("Like", Cons("Gravy", Nil))))
+      listLengthLeft(l) shouldBe 4
+    }
+
+    "also return the correct length for a list of doubles" in {
+
+      val l: List[Double] = Cons(3.2, Cons(1.7, Cons(4.8, Cons(0.008, Nil))))
+      listLengthLeft(l) shouldBe 4
+    }
+  }
+
+  "List.foldLeft2" should {
+
+    "return 0 for the sum of an empty list of ints" in {
+
+      val empty: List[Int] = Nil
+      foldLeft2(empty, 0)(_ + _) shouldBe 0
+    }
+
+    "return the correct value for a sum of doubles" in {
+
+      val doubles: List[Double] = Cons(2.0, Cons(3.0, Nil))
+      foldLeft2(doubles, 1.0)(_ * _) shouldBe 6.0
+    }
+
+    "Operate on the list elements in the right order" in {
+
+      val doubles: List[Double] = Cons(2.0, Cons(4.0, Nil))
+      foldLeft2(doubles, 1.0)(_ / _) shouldBe 0.125 // (1.0 / 4.0 / 2.0) = 0.125
+    }
+  }
+
+  "List.appendLeft" should {
+
+    "Combine two empty lists in to an empty list" in {
+      val l1: List[Int] = Nil
+      val l2: List[Int] = Nil
+
+      appendLeft(l1, l2) shouldBe Nil
+    }
+
+    "Combine a one element list and an empty list in to the one element list" in {
+      val l1: List[Int] = Cons(1, Nil)
+      val l2: List[Int] = Nil
+
+      appendLeft(l1, l2) shouldBe l1
+      appendRight(l1, l2) shouldBe l1
+    }
+
+    "Do the same thing the other way around" in {
+      val l1: List[Int] = Nil
+      val l2: List[Int] = Cons(1, Nil)
+
+      appendLeft(l1, l2) shouldBe l2
+      appendRight(l1, l2) shouldBe l2
+    }
+
+    "Combine two non-empty lists" in {
+      val l1: List[String] = Cons("Hello", Cons("I", Nil))
+      val l2: List[String] = Cons("Like", Cons("Scala", Nil))
+
+      appendLeft(l1, l2) shouldBe Cons("Hello", Cons("I", Cons("Like", Cons("Scala", Nil))))
+      appendRight(l1, l2) shouldBe Cons("Hello", Cons("I", Cons("Like", Cons("Scala", Nil))))
+    }
+  }
+
+  "List.concatenateLists" should {
+
+    "Concatenate a list of lists" in {
+
+      val l1: List[Int] = Cons(1, Cons(2, Cons(3, Nil)))
+      val l2: List[Int] = Cons(4, Cons(5, Nil))
+
+      concatenateLists(Cons(l1, Cons(l2, Nil))) shouldBe Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, Nil)))))
+      concatenateLists2(Cons(l1, Cons(l2, Nil))) shouldBe Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, Nil)))))
     }
   }
 }
