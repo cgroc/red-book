@@ -226,6 +226,65 @@ object List {
     reverse(loop(first, second, Nil)) //TODO: Do you really need to reverse? :-D
   }
 
+  // Thought this might help with hasSubsequence, was wrong but should still test/refine
+  def takeWhile[A](l: List[A], f: A => Boolean): List[A] =
+    l match {
+      case Nil => Nil
+      case Cons(head, tail) =>
+        if (f(head))
+          Cons(head, takeWhile(tail, f))
+        else
+          takeWhile(tail, f)
+    }
 
+  // 3.24
+  // Hard: As an example, implement hasSubsequence for checking whether a List con- tains another List as a subsequence.
+  // For instance, List(1,2,3,4) would have List(1,2), List(2,3), and List(4) as subsequences, among others. You may
+  // have some difficulty finding a concise purely functional implementation that is also efficient. That’s okay.
+  // Implement the function however comes most naturally. We’ll return to this implementation in chapter 5 and hopefully
+  // improve on it. Note: Any two values x and y can be compared for equality in Scala using the expression x == y.
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+    (sup, sub) match {
+      case (_, Nil) => true
+      case (Nil, Cons(_,_)) => false
+      case (Cons(_, supTail), Cons(subHead, _)) =>
+        if(listLength(sub) > listLength(sup))
+          false
+        else {
+          val matched: List[A] = dropWhile(sup, (x: A) => x != subHead)
+          println(s"Matched: $matched")
+          val matchesFound: Boolean = listLength(matched) > 0
+          val zipped: List[Boolean] = zipWith(sub, matched)(_ == _)
+          println(s"Zipped: $zipped")
+          val allSubsequenceElementsMatched: Boolean = foldLeft(zipped, true)(_ && _)
+          println(s"Evaluates as: $allSubsequenceElementsMatched")
+          if(!matchesFound)
+            false
+          else if(allSubsequenceElementsMatched)
+            true
+          else
+            hasSubsequence(supTail, sub)
+        }
+    }
+  }
+
+  // 3.25
+  // Write a function size that counts the number of nodes (leaves and branches) in a tree.
+
+  // 3.26
+  // Write a function maximum that returns the maximum element in a Tree[Int]. (Note: In Scala, you can use x.max(y) or
+  // x max y to compute the maximum of two integers x andy.)
+
+  // 3.27
+  // Write a function depth that returns the maximum path length from the root of a tree to any leaf.
+
+  // 3.28
+  // Write a function map, analogous to the method of the same name on List, that modi- fies each element in a tree with
+  // a given function.
+
+  // 3.29
+  // Generalize size, maximum, depth, and map, writing a new function fold that abstracts over their similarities.
+  // Reimplement them in terms of this more general function. Can you draw an analogy between this fold function and the
+  // left and right folds for List?
 
 }

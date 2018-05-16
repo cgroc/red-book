@@ -287,4 +287,71 @@ class ListSpec extends WordSpec with Matchers {
     }
 
   }
+
+  "List.hasSubsequence" should {
+
+    "return false if the subsequence is larger" in {
+
+      val sup: List[Int] = Cons(1, Nil)
+      val sub: List[Int] = Cons(2, Cons(2, Nil))
+
+      hasSubsequence(sup, sub) shouldBe false
+    }
+
+    "return false if the subsequence is not in the supersequence" in {
+
+      val sup: List[Int] = Cons(2, Cons(2, Nil))
+      val sub: List[Int] = Cons(1, Nil)
+
+      hasSubsequence(sup, sub) shouldBe false
+    }
+
+    "return true if the subsequence is in the supersequence" in {
+
+      val sup: List[Int] = Cons(1, Cons(2, Cons(3, Cons(4, Nil))))
+      val sub: List[Int] = Cons(1, Cons(2, Nil))
+
+      hasSubsequence(sup, sub) shouldBe true
+    }
+
+    "return true if a different subsequence is in the supersequence" in {
+
+      val sup: List[Int] = Cons(1, Cons(2, Cons(3, Cons(4, Nil))))
+      val sub: List[Int] = Cons(2, Cons(3, Nil))
+
+      hasSubsequence(sup, sub) shouldBe true
+    }
+
+    "return true if a still different subsequence is in the supersequence" in {
+
+      val sup: List[Int] = Cons(1, Cons(2, Cons(3, Cons(4, Nil))))
+      val sub: List[Int] = Cons(4, Nil)
+
+      hasSubsequence(sup, sub) shouldBe true
+    }
+
+    "return true for a tricksy valid subsequence" in {
+
+      val sup: List[Int] = Cons(1, Cons(4, Cons(1, Cons(3, Cons(1, Cons(2, Nil))))))
+      val sub: List[Int] = Cons(1, Cons(2, Nil))
+
+      hasSubsequence(sup, sub) shouldBe true
+    }
+
+    "return false for a tricksy invalid subsequence" in {
+
+      val sup: List[Int] = Cons(1, Cons(4, Cons(1, Cons(3, Cons(1, Cons(1, Nil))))))
+      val sub: List[Int] = Cons(1, Cons(2, Nil))
+
+      hasSubsequence(sup, sub) shouldBe false
+    }
+
+    "return false for a differently tricksy invalid subsequence" in {
+
+      val sup: List[Int] = Cons(1, Cons(3, Cons(2, Cons(4, Cons(4, Cons(4, Nil))))))
+      val sub: List[Int] = Cons(1, Cons(2, Nil))
+
+      hasSubsequence(sup, sub) shouldBe false
+    }
+  }
 }
