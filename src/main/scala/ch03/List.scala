@@ -120,7 +120,7 @@ object List {
     foldLeft[A, List[A]](reverse(l1), l2)((b, a) => Cons(a, b))
 
   def appendRight[A](l1: List[A], l2: List[A]): List[A] =
-    foldRight[A, List[A]](l1, l2)(Cons(_,_))
+    foldRight[A, List[A]](l1, l2)(Cons(_, _))
 
   // 3.15
   // Hard: Write a function that concatenates a list of lists into a single list.
@@ -145,6 +145,85 @@ object List {
       }
 
     loop(ls, Nil)
+  }
+
+  // 3.16 Write a function that transforms a list of integers by adding 1 to each element. (Reminder: this should be a
+  // pure function that returns a new List!)
+  def addOneToEverything(ints: List[Int]): List[Int] =
+    ints match {
+      case Nil => Nil
+      case Cons(i, is) => Cons(i + 1, addOneToEverything(is))
+    }
+
+  // 3.17 Write a function that turns each value in a List[Double] into a String. You can use the expression d.toString
+  // to convert some d: Double to a String.
+  def makeAllTheDoublesInToStrings(doubles: List[Double]): List[String] =
+    doubles match {
+      case Nil => Nil
+      case Cons(d, ds) => Cons(d.toString, makeAllTheDoublesInToStrings(ds))
+    }
+
+  //3.18
+  // Write a function map that generalizes modifying each element in a list while maintain- ing the structure of the
+  // list.
+
+  def map[A, B](as: List[A])(f: A => B): List[B] =
+    as match {
+      case Nil => Nil
+      case Cons(head, tail) => Cons(f(head), map(tail)(f))
+    }
+
+
+  // 3.19
+  //  Write a function filter that removes elements from a list unless they satisfy a given predicate. Use it to remove
+  // all odd numbers from a List[Int].
+  def filter[A](as: List[A])(f: A => Boolean): List[A] =
+    as match {
+      case Nil => Nil
+      case Cons(head, tail) if (f(head)) => Cons(head, filter(tail)(f))
+      case Cons(_, tail) => filter(tail)(f)
+    }
+
+  // 3.20
+  //  Write a function flatMap that works like map except that the function given will return a list instead of a single
+  //  result, and that list should be inserted into the final resulting list. Here is its signature:
+  //  For instance, flatMap(List(1,2,3))(i => List(i,i)) should result in List(1,1,2,2,3,3).
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = {
+    val bs: List[List[B]] = map(as)(f)
+    concatenateLists(bs)
+  }
+
+  // 3.21
+  // Use flatMap to implement filter.
+  def filterWithFlatMap[A](as: List[A])(f: A => Boolean): List[A] =
+    flatMap(as)(a => if (f(a)) Cons(a, Nil) else Nil)
+
+  // 3.22
+  // Write a function that accepts two lists and constructs a new list by adding correspond- ing elements. For example,
+  // List(1,2,3) and List(4,5,6) become List(5,7,9).
+  def addCorrespondingEntries(first: List[Int], second: List[Int]): List[Int] = {
+    @tailrec
+    def loop(f: List[Int], s: List[Int], acc: List[Int]): List[Int] =
+      (f, s) match {
+        case (Nil, _) => acc
+        case (_, Nil) => acc
+        case (Cons(fhead, ftail), Cons(shead, stail)) => loop(ftail, stail, Cons(fhead + shead, acc))
+      }
+    reverse(loop(first, second, Nil)) //TODO: Do you really need to reverse? :-D
+  }
+
+  // 3.23
+  // Generalize the function you just wrote so that it’s not specific to integers or addition. Name your generalized
+  // function zipWith.
+  def zipWith[A, B](first: List[A], second: List[A])(combine: (A, A) => B): List[B] = {
+    @tailrec
+    def loop(f: List[A], s: List[A], acc: List[B]): List[B] =
+      (f, s) match {
+        case (Nil, _) => acc
+        case (_, Nil) => acc
+        case (Cons(fhead, ftail), Cons(shead, stail)) => loop(ftail, stail, Cons(combine(fhead, shead), acc))
+      }
+    reverse(loop(first, second, Nil)) //TODO: Do you really need to reverse? :-D
   }
 
 

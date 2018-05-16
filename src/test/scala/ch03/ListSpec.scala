@@ -252,4 +252,39 @@ class ListSpec extends WordSpec with Matchers {
       concatenateLists2(Cons(l1, Cons(l2, Nil))) shouldBe Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, Nil)))))
     }
   }
+
+  "List.filterWithFlatMap" should {
+
+    "Filter stuff" in {
+      val ints: List[Int] = Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, Cons(6, Nil))))))
+      val evens: List[Int] = Cons(2, Cons(4, Cons(6, Nil)))
+
+      filterWithFlatMap(ints)(_ % 2 == 0) shouldBe evens
+
+    }
+  }
+
+  "List.addCorrespondingEntries" should {
+
+    "add up some integers" in {
+      val first: List[Int] = Cons(1, Cons(2, Cons(3, Nil)))
+      val second: List[Int] = Cons(2, Cons(3, Cons(4, Nil)))
+      val expect: List[Int] = Cons(3, Cons(5, Cons(7, Nil)))
+
+      addCorrespondingEntries(first, second) shouldBe expect
+    }
+
+  }
+
+  "List.zipWith" should {
+
+    "add up some integers" in {
+      val first: List[Int] = Cons(1, Cons(2, Cons(3, Nil)))
+      val second: List[Int] = Cons(2, Cons(3, Cons(4, Nil)))
+      val expect: List[Int] = Cons(3, Cons(5, Cons(7, Nil)))
+
+      zipWith(first, second)(_ + _) shouldBe expect
+    }
+
+  }
 }
