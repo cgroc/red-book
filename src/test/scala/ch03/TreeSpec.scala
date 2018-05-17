@@ -9,12 +9,26 @@ class TreeSpec extends WordSpec with Matchers {
     "return 1 for a leaf" in {
       val t: Tree[Int] = Leaf(789)
       Tree.size(t) shouldBe 1
+      Tree.sizeFoldingByTheBook(t) shouldBe 1
     }
 
     "return 3 for tree with 3 nodes" in {
       val t: Tree[Int] = Branch(Leaf(1), Leaf(2))
       Tree.size(t) shouldBe 3
+      Tree.sizeFoldingByTheBook(t) shouldBe 3
     }
+
+    "return 7 when there's 7 bits" in {
+
+      val t: Tree[Int] = Branch(Branch(Leaf(1), Leaf(2)), Branch(Leaf(1), Leaf(2)))
+      Tree.sizeFoldingByTheBook(t) shouldBe 7
+    }
+
+//    "return 3 for tree with 3 nodes" in {
+//      val t: Tree[Int] = Branch(Leaf(1), Leaf(2))
+//      Tree.size(t) shouldBe 3
+//      Tree.sizeFoldingByTheBook(t) shouldBe 3
+//    }
   }
 
   "Tree.maximum" should {
@@ -38,12 +52,16 @@ class TreeSpec extends WordSpec with Matchers {
 
       val t = Leaf(7)
       Tree.depth(t) shouldBe 0
+      Tree.depth2(t) shouldBe 0
+      Tree.depthFoldingByTheBook(t) shouldBe 0
     }
 
     "return 2 for a tree with maximum depth 2" in {
 
       val t = Branch(Leaf(7), Branch(Leaf(8), Leaf(20)))
       Tree.depth(t) shouldBe 2
+      Tree.depth2(t) shouldBe 2
+      Tree.depthFoldingByTheBook(t) shouldBe 2
     }
   }
 

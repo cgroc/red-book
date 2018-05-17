@@ -38,6 +38,14 @@ object Tree {
     maximum(loop(tree, 0))
   }
 
+  def depth2[A](tree: Tree[A]): Int =
+    tree match {
+      case Leaf(_) => 0
+      case Branch(l, r) =>
+        val (depthl, depthr): (Int, Int) = (depth2(l) +1, depth2(r) + 1)
+        depthl max depthr
+    }
+
   // 3.28
   // Write a function map, analogous to the method of the same name on List, that modifies each element in a tree with
   // a given function.
@@ -61,4 +69,17 @@ object Tree {
       }
     loop(tree, unit)
   }
+
+  def foldByTheBook[A, B](tree: Tree[A])(f: A => B)(g: (B, B) => B): B =
+    tree match {
+      case Leaf(a) => f(a)
+      case Branch(l, r) => g(foldByTheBook(l)(f)(g), foldByTheBook(r)(f)(g))
+    }
+
+  def sizeFoldingByTheBook[A](tree: Tree[A]): Int =
+    foldByTheBook[A, Int](tree)(_ => 1)(_ + _ + 1)
+
+  def depthFoldingByTheBook[A](tree: Tree[A]): Int =
+    foldByTheBook[A, Int](tree)(_ => 0)((ldepth: Int, rdepth: Int) => (ldepth + 1) max (rdepth + 1))
+
 }
