@@ -33,7 +33,7 @@ object ExercisesCh02 {
   def partial1[A, B, C](a: A, f: (A, B) => C): B => C =
     b => f(a, b)
 
-  def curry[A, B, C](f: (A, B) => C): A => (B => C) =
+  def curry[A, B, C](f: (A, B) => C): A => B => C =
     a => b => f(a, b)
   // alternatively a => partial1(a, f)... which is kind of how I figured it out
 
