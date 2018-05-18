@@ -10,18 +10,21 @@ class TreeSpec extends WordSpec with Matchers {
       val t: Tree[Int] = Leaf(789)
       Tree.size(t) shouldBe 1
       Tree.sizeFoldingByTheBook(t) shouldBe 1
+      Tree.sizeFold(t) shouldBe 1
     }
 
     "return 3 for tree with 3 nodes" in {
       val t: Tree[Int] = Branch(Leaf(1), Leaf(2))
       Tree.size(t) shouldBe 3
       Tree.sizeFoldingByTheBook(t) shouldBe 3
+      Tree.sizeFold(t) shouldBe 3
     }
 
     "return 7 when there's 7 bits" in {
 
       val t: Tree[Int] = Branch(Branch(Leaf(1), Leaf(2)), Branch(Leaf(1), Leaf(2)))
       Tree.sizeFoldingByTheBook(t) shouldBe 7
+      Tree.sizeFold(t) shouldBe 7
     }
 
 //    "return 3 for tree with 3 nodes" in {

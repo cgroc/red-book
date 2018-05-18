@@ -70,6 +70,13 @@ object Tree {
     loop(tree, unit)
   }
 
+  def sizeFold[A](tree: Tree[A]): Int =
+    fold(tree, 1)((_, int) => int + 1)
+
+  // I'm not sure there's any way to do depth like this!
+//  def depthFold[A](tree: Tree[A]): Int =
+//    fold(tree, 0)((_, int) => int + 1)
+
   def foldByTheBook[A, B](tree: Tree[A])(f: A => B)(g: (B, B) => B): B =
     tree match {
       case Leaf(a) => f(a)
