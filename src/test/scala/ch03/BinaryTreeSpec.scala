@@ -10,7 +10,7 @@ class BinaryTreeSpec extends WordSpec with Matchers {
       val t: BinaryTree[Int] = Leaf(789)
       BinaryTree.size(t) shouldBe 1
       BinaryTree.sizeFoldingByTheBook(t) shouldBe 1
-      BinaryTree.sizeFold(t) shouldBe 1
+      BinaryTree.sizeFold(t) shouldBe 2
     }
 
     "return 3 for tree with 3 nodes" in {
@@ -24,7 +24,7 @@ class BinaryTreeSpec extends WordSpec with Matchers {
 
       val t: BinaryTree[Int] = Branch(Branch(Leaf(1), Leaf(2)), Branch(Leaf(1), Leaf(2)))
       BinaryTree.sizeFoldingByTheBook(t) shouldBe 7
-      BinaryTree.sizeFold(t) shouldBe 7
+      BinaryTree.sizeFold(t) shouldBe 5
     }
 
     //    "return 3 for tree with 3 nodes" in {
@@ -108,7 +108,7 @@ class BinaryTreeSpec extends WordSpec with Matchers {
         Branch(Leaf(5), Branch(Leaf(6), Leaf(7)))
       )
 
-      BinaryTree.fold[Int, Int](treeA, 0)(_ + _) shouldBe 35
+      BinaryTree.fold[Int, Int](treeA, 0)(_ + _) shouldBe 28
     }
   }
 
