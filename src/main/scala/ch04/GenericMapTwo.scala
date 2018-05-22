@@ -11,6 +11,13 @@ object GenericMapTwo {
       case _                    => None
     }
 
+  // *Cleaner* version using a for comprehension
+  def map2For[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    for {
+      a1 <- a
+      b1 <- b
+    } yield f(a1, b1)
+
   // Exercise 4.4
   def sequence[A](a: List[Option[A]]): Option[List[A]] = a match {
     case Nil    => Some(Nil)
