@@ -50,8 +50,7 @@ object Option {
   //Exercise 4.3
   def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
     (a, b) match {
-      case (None, _) => None
-      case (_, None) => None
-      case (Some(a), Some(b)) => Some(f(a,b))
+      case (Some(av), Some(bv)) => Some(f(av,bv))
+      case (_, _) => None
     }
 }

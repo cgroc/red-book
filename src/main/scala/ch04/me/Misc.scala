@@ -20,6 +20,12 @@ object Misc {
     }
   }
 
+//  must be possible
+  def varianceFor(xs: Seq[Double]): Option[Double] =
+    for {
+      ???
+    } yield ???
+
 
   def Try[A](a: => A): Option[A] =
     try Some(a)
@@ -41,5 +47,14 @@ object Misc {
   def insuranceRateQuote(age: Int, numberOfSpeedingTickets: Int): Double =
     ((100 - age) * numberOfSpeedingTickets) * 10.0
 
+  // Exercise 4.4
+  def sequence[A](optionAs: List[Option[A]]): Option[List[A]] = {
 
+    def loop(optionList: List[Option[A]], acc: Option[List[A]]): Option[List[A]] = ???
+
+    optionAs match {
+      case Nil => ???
+      case optHead :: optTail => ???
+    }
+  }
 }
