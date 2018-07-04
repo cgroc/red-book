@@ -21,10 +21,10 @@ object Misc {
   }
 
 //  must be possible
-  def varianceFor(xs: Seq[Double]): Option[Double] =
-    for {
-      ???
-    } yield ???
+//  def varianceFor(xs: Seq[Double]): Option[Double] =
+//    for {
+//      ???
+//    } yield ???
 
 
   def Try[A](a: => A): Option[A] =
