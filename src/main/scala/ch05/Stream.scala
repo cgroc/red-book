@@ -151,7 +151,14 @@ object Stream {
   }
 
   // 5.11
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = ???
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] =
+    f(z) match {
+      case None => empty
+      case Some((a, s)) => cons[A](a, unfold(s)(f))
+    }
+
+  // 5.12 write fibs, from, constant and ones in terms of unfold
+  def unfoldFibs: Stream[Int] = ???
 }
 
 object Main extends App {
