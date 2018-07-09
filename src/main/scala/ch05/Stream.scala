@@ -158,7 +158,23 @@ object Stream {
     }
 
   // 5.12 write fibs, from, constant and ones in terms of unfold
-  def unfoldFibs: Stream[Int] = ???
+  // Just to make it totally clear to myself... break it in to bits?
+  def unfoldFibs: Stream[Int] = {
+    val generate: (Int, Int) => Option[(Int, (Int, Int))] =
+      (first, second) => Some((first, (second, first + second)))
+//    unfold[Int, (Int, Int)]((0, 1))(generate) // why the heck doesn't this compile?
+    unfold[Int, (Int, Int)]((0, 1)) {
+      t => Some(t._1, (t._2, t._1 + t._2))
+    }
+  }
+
+  def unfoldFrom(n: Int): Stream[Int] =
+    unfold[Int, Int](n)(m => Some(m, m + 1))
+
+  def unfoldConstant[A](value: A): Stream[A] = unfold(value)(c => Some((c, c)))
+
+  def unfoldOnes: Stream[Int] = unfold(1)(_ => Some((1, 1)))
+
 }
 
 object Main extends App {
@@ -225,6 +241,18 @@ object Main extends App {
   println("From 7 take 8: " + Stream.from(7).take(8).toList)
   println()
 
+  println("From 7 take 8 (using unfold): " + Stream.unfoldFrom(7).take(8).toList)
+  println()
+
   println("First 7 fibs: " + Stream.fibs.take(7).toList)
+  println()
+
+  println("First 7 fibs (using unfold): " + Stream.unfoldFibs.take(7).toList)
+  println()
+
+  println("unfoldConstant: " + Stream.unfoldConstant("MY BRAIN HURTS").take(3).toList)
+  println()
+
+  println("unfoldOnes: " + Stream.unfoldOnes.take(6).toList)
   println()
 }
