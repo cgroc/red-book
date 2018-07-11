@@ -175,6 +175,17 @@ object Stream {
 
   def unfoldOnes: Stream[Int] = unfold(1)(_ => Some((1, 1)))
 
+  // Just for funsies
+  def unfoldFactorial: Stream[Int] =
+    unfold(1, 1) {
+      t => Some(t._1, (t._1 * t._2, t._2 + 1))
+    }
+
+  def unfoldFactorialLessHorrible: Stream[Int] =
+    unfold(1, 1) {
+      case (acc, current) =>  Some(acc, (acc * current, current + 1)) // you can give somewhat more meaningful names to the tuple things
+    }
+
 }
 
 object Main extends App {
@@ -254,5 +265,11 @@ object Main extends App {
   println()
 
   println("unfoldOnes: " + Stream.unfoldOnes.take(6).toList)
+  println()
+
+  println("factorial: " + Stream.unfoldFactorial.take(10).toList)
+  println()
+
+  println("factorial: " + Stream.unfoldFactorialLessHorrible.take(10).toList)
   println()
 }
