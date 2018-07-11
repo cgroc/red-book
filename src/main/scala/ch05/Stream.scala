@@ -135,9 +135,25 @@ sealed trait Stream[+A] {
       case (toTake, stream) => if(toTake == 0) None else stream.headOption.map(a => (a, (toTake - 1, stream.drop(1))))
     }
 
-  def unfoldTakeWhile = ???
+  // I'm not proud of myself, but it's late and I'm tired
+  def unfoldTakeWhile(p: A => Boolean): Stream[A] =
+    Stream.unfold((this.headOption, this.headOption.map(p), this)) {
+      case (maybeHead, maybeBool, stream) => maybeBool match {
+        case None => None
+        case Some(false) => None
+        case Some(true) => maybeHead.flatMap {
+          head => Some(head, (stream.drop(1).headOption, stream.drop(1).headOption.map(p), stream.drop(1)))
+        }
+      }
+    }
 
-  def unfoldZipWith = ???
+//  def zipWith[A, B](first: List[A], second: List[A])(combine: (A, A) => B): List[B]
+//  def unfoldZipWith[A1 >: A, B](other: Stream[A1])(conmbine: (A, A) => B): Stream[B] =
+//    this.unfoldMap {
+//      other.unfoldMap {
+//        ???
+//      }
+//    }
 
   def unfoldZipAll = ???
 
@@ -303,6 +319,12 @@ object Main extends App {
   println()
 
   println("Stream(5, 4, 3, 2, 1).unfoldMap(_ - 1) is: " + Stream(5, 4, 3, 2, 1).unfoldMap(_ - 1).toList)
+  println()
+
+  println("From 1 take while < 10 (using unfold): " + Stream.unfoldFrom(1).unfoldTakeWhile(_ < 10).toList)
+  println()
+
+  println("From an empty stream take while < 10 (using unfold): " + Stream.empty[Int].unfoldTakeWhile(_ < 10).toList)
   println()
 
 }
