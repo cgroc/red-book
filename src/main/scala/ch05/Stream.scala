@@ -116,6 +116,32 @@ sealed trait Stream[+A] {
   //From book
   def find(p: A => Boolean): Option[A] = filter(p).headOption
 
+  // 5.13
+  // Use unfold to implement map, take, takeWhile, zipWith (as in chapter 3), and zipAll. The zipAll function should
+  // continue the traversal as long as either stream has more elements—it uses Option to indicate whether each stream
+  // has been exhausted.
+
+  //def zipAll[B](s2: Stream[B]): Stream[(Option[A],Option[B])] = ???
+
+  // def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] // reminder
+
+  def unfoldMap[B](f: A => B): Stream[B] =
+    Stream.unfold(this)(stream => stream.headOption map {
+      a => (f(a), stream.drop(1))
+    })
+
+  def unfoldTake(n: Int): Stream[A] =
+    Stream.unfold((n, this)) {
+      case (toTake, stream) => if(toTake == 0) None else stream.headOption.map(a => (a, (toTake - 1, stream.drop(1))))
+    }
+
+  def unfoldTakeWhile = ???
+
+  def unfoldZipWith = ???
+
+  def unfoldZipAll = ???
+
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -270,6 +296,13 @@ object Main extends App {
   println("factorial: " + Stream.unfoldFactorial.take(10).toList)
   println()
 
+  println("factorial (use unfoldTake): " + Stream.unfoldFactorial.unfoldTake(10).toList)
+  println()
+
   println("factorial: " + Stream.unfoldFactorialLessHorrible.take(10).toList)
   println()
+
+  println("Stream(5, 4, 3, 2, 1).unfoldMap(_ - 1) is: " + Stream(5, 4, 3, 2, 1).unfoldMap(_ - 1).toList)
+  println()
+
 }
