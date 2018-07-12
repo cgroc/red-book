@@ -158,7 +158,13 @@ sealed trait Stream[+A] {
       case _ => None
     }
 
-  def zipAll = ???
+  def zipAll[B](s2: Stream[B]): Stream[(Option[A],Option[B])] =
+    Stream.unfold((this, s2)) {
+      case (Cons(ah, at), Cons(bh, bt)) => Some((Some(ah.apply), Some(bh.apply)), (at.apply, bt.apply))
+      case (Cons(ah, at), Empty) => Some((Some(ah.apply), None), (at.apply, Empty))
+      case (Empty, Cons(bh, bt)) => Some((None, Some(bh.apply)), (Empty, bt.apply))
+      case (Empty, Empty) => None
+    }
 
 
 //    Stream.unfold((this.headOption, this.headOption.map(p), this)) {
@@ -178,8 +184,6 @@ sealed trait Stream[+A] {
 //        ???
 //      }
 //    }
-
-  def unfoldZipAll = ???
 
 
 }

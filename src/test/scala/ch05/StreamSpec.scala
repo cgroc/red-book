@@ -72,6 +72,25 @@ class StreamSpec extends WordSpec with Matchers {
       }
     }
 
+    "calling ZipAll" should {
+
+      "work for two empty streams" in {
+        Stream.empty[Int].zipAll(Stream.empty[Int]).toList shouldBe List.empty
+      }
+
+      "work for two streams of the same length" in {
+        Stream.apply(1, 2, 3, 4).zipAll(Stream.apply(4, 3, 2, 1)).toList shouldBe List((Some(1), Some(4)), (Some(2), Some(3)), (Some(3), Some(2)), (Some(4), Some(1)))
+      }
+
+      "work where the first stream is longer than the second" in {
+        Stream.apply(1, 2, 3, 4).zipAll(Stream.apply(4, 3, 2)).toList shouldBe List((Some(1), Some(4)), (Some(2), Some(3)), (Some(3), Some(2)), (Some(4), None))
+      }
+
+      "work where the second stream is longer than the first" in {
+        Stream.apply(1, 2).zipAll(Stream.apply(4, 3, 2, 1)).toList shouldBe List((Some(1), Some(4)), (Some(2), Some(3)), (None, Some(2)), (None, Some(1)))
+      }
+    }
+
   }
 
 
