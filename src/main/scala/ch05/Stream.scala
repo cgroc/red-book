@@ -35,7 +35,7 @@ sealed trait Stream[+A] {
     this match {
       case Empty => Empty
       case _ if n <= 0 => Empty
-      case Cons(h, _) if n == 1 => Cons(h, () => Empty)
+//      case Cons(h, _) if n == 1 => Cons(h, () => Empty)
       case Cons(h, t) => Cons(h, () => t().take(n - 1))
     }
 
@@ -123,29 +123,53 @@ sealed trait Stream[+A] {
 
   //def zipAll[B](s2: Stream[B]): Stream[(Option[A],Option[B])] = ???
 
+
+
+//  def unfoldMap[B](f: A => B): Stream[B] =
+//    Stream.unfold(this)(stream => stream.headOption map {
+//      a => (f(a), stream.drop(1))
+//    })
+//
+//  def unfoldTake(n: Int): Stream[A] =
+//    Stream.unfold((n, this)) {
+//      case (toTake, stream) => if(toTake == 0) None else stream.headOption.map(a => (a, (toTake - 1, stream.drop(1))))
+//    }
+
   // def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] // reminder
 
-  def unfoldMap[B](f: A => B): Stream[B] =
-    Stream.unfold(this)(stream => stream.headOption map {
-      a => (f(a), stream.drop(1))
-    })
-
-  def unfoldTake(n: Int): Stream[A] =
-    Stream.unfold((n, this)) {
-      case (toTake, stream) => if(toTake == 0) None else stream.headOption.map(a => (a, (toTake - 1, stream.drop(1))))
-    }
-
-  // I'm not proud of myself, but it's late and I'm tired
+  // I can take no credit for this
   def unfoldTakeWhile(p: A => Boolean): Stream[A] =
-    Stream.unfold((this.headOption, this.headOption.map(p), this)) {
-      case (maybeHead, maybeBool, stream) => maybeBool match {
-        case None => None
-        case Some(false) => None
-        case Some(true) => maybeHead.flatMap {
-          head => Some(head, (stream.drop(1).headOption, stream.drop(1).headOption.map(p), stream.drop(1)))
-        }
-      }
+    Stream.unfold(this) {
+      case Cons(h, t) if p(h.apply) => Some((h.apply, t.apply))
+      case _ => None
     }
+
+
+  def unfoldMap[B](f: A => B): Stream[B] =
+    Stream.unfold(this) {
+      case Cons(h, t) => Some(f(h.apply), t.apply)
+      case _ => None
+    }
+
+  //  def zipWith[A, B](first: List[A], second: List[A])(combine: (A, A) => B): List[B]
+  def zipWith[B, C](s: Stream[B])(f: (A, B) => C): Stream[C] =
+    Stream.unfold((this, s)) {
+      case (Cons(ahead, atail), Cons(bhead, btail)) => Some((f(ahead.apply, bhead.apply), (atail.apply, btail.apply)))
+      case _ => None
+    }
+
+  def zipAll = ???
+
+
+//    Stream.unfold((this.headOption, this.headOption.map(p), this)) {
+//      case (maybeHead, maybeBool, stream) => maybeBool match {
+//        case None => None
+//        case Some(false) => None
+//        case Some(true) => maybeHead.flatMap {
+//          head => Some(head, (stream.drop(1).headOption, stream.drop(1).headOption.map(p), stream.drop(1)))
+//        }
+//      }
+//    }
 
 //  def zipWith[A, B](first: List[A], second: List[A])(combine: (A, A) => B): List[B]
 //  def unfoldZipWith[A1 >: A, B](other: Stream[A1])(conmbine: (A, A) => B): Stream[B] =
@@ -312,13 +336,13 @@ object Main extends App {
   println("factorial: " + Stream.unfoldFactorial.take(10).toList)
   println()
 
-  println("factorial (use unfoldTake): " + Stream.unfoldFactorial.unfoldTake(10).toList)
+//  println("factorial (use unfoldTake): " + Stream.unfoldFactorial.unfoldTake(10).toList)
   println()
 
   println("factorial: " + Stream.unfoldFactorialLessHorrible.take(10).toList)
   println()
 
-  println("Stream(5, 4, 3, 2, 1).unfoldMap(_ - 1) is: " + Stream(5, 4, 3, 2, 1).unfoldMap(_ - 1).toList)
+//  println("Stream(5, 4, 3, 2, 1).unfoldMap(_ - 1) is: " + Stream(5, 4, 3, 2, 1).unfoldMap(_ - 1).toList)
   println()
 
   println("From 1 take while < 10 (using unfold): " + Stream.unfoldFrom(1).unfoldTakeWhile(_ < 10).toList)
