@@ -353,5 +353,13 @@ class ListSpec extends WordSpec with Matchers {
 
       hasSubsequence(sup, sub) shouldBe false
     }
+
+    "do a thing there" in {
+
+      val sup: List[Int] = Cons(4, Cons(4, Cons(4, Cons(4, Cons(1, Cons(2, Nil))))))
+      val sub: List[Int] = Cons(1, Cons(2, Cons(3, Nil)))
+
+      hasSubsequence(sup, sub) shouldBe false
+    }
   }
 }

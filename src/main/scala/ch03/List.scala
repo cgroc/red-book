@@ -250,10 +250,10 @@ object List {
       case (Cons(_, supTail), Cons(subHead, _)) =>
         if(listLength(sub) > listLength(sup))
           false
-        else {
-          val matched: List[A] = dropWhile(sup, (x: A) => x != subHead)
+        else { //Oooh, now that I come to look at it I think I was wrong.
+          val matched: List[A] = dropWhile(sup, (x: A) => x != subHead) // can matched.length ever be less than sup.length? Surely it can?!?!
           println(s"Matched: $matched")
-          val matchesFound: Boolean = listLength(matched) > 0
+          val matchesFound: Boolean = listLength(matched) > 0 && listLength(matched) >= listLength(sub) //It can, so you need to fix it here!
           val zipped: List[Boolean] = zipWith(sub, matched)(_ == _)
           println(s"Zipped: $zipped")
           val allSubsequenceElementsMatched: Boolean = foldLeft(zipped, true)(_ && _)
