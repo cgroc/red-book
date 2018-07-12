@@ -166,25 +166,22 @@ sealed trait Stream[+A] {
       case (Empty, Empty) => None
     }
 
+  // hasSubsequence? TODO
 
-//    Stream.unfold((this.headOption, this.headOption.map(p), this)) {
-//      case (maybeHead, maybeBool, stream) => maybeBool match {
-//        case None => None
-//        case Some(false) => None
-//        case Some(true) => maybeHead.flatMap {
-//          head => Some(head, (stream.drop(1).headOption, stream.drop(1).headOption.map(p), stream.drop(1)))
-//        }
-//      }
-//    }
-
-//  def zipWith[A, B](first: List[A], second: List[A])(combine: (A, A) => B): List[B]
-//  def unfoldZipWith[A1 >: A, B](other: Stream[A1])(conmbine: (A, A) => B): Stream[B] =
-//    this.unfoldMap {
-//      other.unfoldMap {
-//        ???
-//      }
-//    }
-
+  // 5.14
+  def startsWith[A](s: Stream[A]): Boolean =
+    this.zipAll(s).takeWhile {
+      case (_, Some(_)) => true
+      case _ => false
+    }.foldRight(true) {
+      case ((maybeThis, maybeThat), acc) => {
+        val stuffMatches: Boolean = (for {
+          thisElem <- maybeThis
+          thatElem <- maybeThat
+        } yield thisElem == thatElem).getOrElse(false)
+        stuffMatches && acc
+      }
+    }
 
 }
 

@@ -91,6 +91,29 @@ class StreamSpec extends WordSpec with Matchers {
       }
     }
 
+    "calling startsWith" should {
+
+      "return true when empty Stream startsWith an empty Stream" in {
+        Stream.empty[Int].startsWith(Stream.empty[Int]) shouldBe true
+      }
+
+      "return true when a nonEmpty Stream startsWith an empty Stream" in {
+        Stream.apply(1, 2, 3).startsWith(Stream.empty[Int]) shouldBe true
+      }
+
+      "return true when one Stream starts with another" in {
+        Stream.apply(1, 2, 3).startsWith(Stream.apply(1, 2)) shouldBe true
+      }
+
+      "return false when one Stream doesn't start with the other" in {
+        Stream.apply(1, 2, 3).startsWith(Stream.apply(2, 1)) shouldBe false
+      }
+
+      "return false when the Stream being searched for is longer than this one" in {
+        Stream.apply(1, 2, 3).startsWith(Stream.apply(1, 2, 3, 4)) shouldBe false
+      }
+    }
+
   }
 
 

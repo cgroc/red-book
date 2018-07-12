@@ -209,6 +209,7 @@ object List {
         case (_, Nil) => acc
         case (Cons(fhead, ftail), Cons(shead, stail)) => loop(ftail, stail, Cons(fhead + shead, acc))
       }
+
     reverse(loop(first, second, Nil)) //TODO: Do you really need to reverse? :-D
   }
 
@@ -223,6 +224,7 @@ object List {
         case (_, Nil) => acc
         case (Cons(fhead, ftail), Cons(shead, stail)) => loop(ftail, stail, Cons(combine(fhead, shead), acc))
       }
+
     reverse(loop(first, second, Nil)) //TODO: Do you really need to reverse? :-D
   }
 
@@ -246,15 +248,14 @@ object List {
   def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
     (sup, sub) match {
       case (_, Nil) => true
-      case (Nil, Cons(_,_)) => false
+      case (Nil, Cons(_, _)) => false
       case (Cons(_, supTail), Cons(subHead, _)) =>
-        if(listLength(sub) > listLength(sup))
+        if (listLength(sub) > listLength(sup))
           false
-        else { //Oooh, now that I come to look at it I think I was wrong.
-          val matched: List[A] = dropWhile(sup, (x: A) => x != subHead) // can matched.length ever be less than sup.length? Surely it can?!?!
-          println(s"Matched: $matched")
-          val potentialMatchFound: Boolean = listLength(matched) > 0 && listLength(matched) >= listLength(sub) //It can, so you need to fix it here!
-          if(potentialMatchFound) {
+        else {
+          val matched: List[A] = dropWhile(sup, (x: A) => x != subHead)
+          val potentialMatchFound: Boolean = listLength(matched) > 0 && listLength(matched) >= listLength(sub)
+          if (potentialMatchFound) {
             val zipped: List[Boolean] = zipWith(sub, matched)(_ == _)
             val allSubsequenceElementsMatched: Boolean = foldLeft(zipped, true)(_ && _)
             allSubsequenceElementsMatched || hasSubsequence(supTail, sub)
@@ -264,6 +265,5 @@ object List {
         }
     }
   }
-
 
 }
