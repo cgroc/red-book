@@ -67,23 +67,75 @@ object SimpleRNG {
 
   type Rand[+A] = RNG => (A, RNG)
 
+  val int: Rand[Int] = _.nextInt
+
+  def unit[A](a: A): Rand[A] =
+    rng => (a, rng)
+
+  def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
+    rng => {
+      val (a, rng2) = s(rng)
+      (f(a), rng2)
+    }
+
+  // Exercise 6.5
+  def doubleMap(rng: RNG): (Double, RNG) =
+    map[Int, Double](nonNegativeInt) {
+      _ / (Int.MaxValue.toDouble + 1) // note algo taken from implementation in fpscala repo
+    } (rng)
+
+  // Exercise 6.6
+  def map2[A, B, C](s1: Rand[A], s2: Rand[B])(f: (A, B) => C): Rand[C] = rng => {
+    val (a, rnga) = s1(rng)
+    val (b, rngb) = s2(rnga)
+    (f(a, b), rngb)
+  }
+
+  // naive implementation before reading on
+  def doubleIntMap2(rng: RNG): ((Double, Int), RNG) =
+    map2[Double, Int, (Double, Int)](double, int) {
+      (i, d) => Tuple2(i, d) // otherwise the syntax is confusing imo
+    } (rng)
+
+  // now by the book
+  def both[A,B](ra: Rand[A], rb: Rand[B]): Rand[(A,B)] =
+    map2(ra, rb)((_, _))
+
+  val randIntDouble: Rand[(Int, Double)] =
+    both(int, double)
+
+  val randDoubleInt: Rand[(Double, Int)] =
+    both(double, int)
+
+  // Exercise 6.7
+  // fs: List[Rand[A]] a.k.a List[RNG => (A, RNG)]
+  // Rand[List[A]] a.k.a RNG => (List[A], RNG)
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] =
+    rng => fs.foldRight[Rand[List[A]]](unit(List.empty)) {
+      (randa, randlista) => map2(randa, randlista) {
+        (a, lista) => lista.+:(a)
+      }
+    } (rng)
+
+  def intsSequence(count: Int)(rng: RNG): (List[Int], RNG) =
+    sequence[Int](List.fill(count)(int))(rng)
 }
 
 object Main extends App {
   println(SimpleRNG(42).nextInt)
   println(SimpleRNG(42).nextInt)
 
-//  println(Int.MaxValue)
-//  println(Int.MinValue)
-
-  import ch06.SimpleRNG.Rand
-
-  val int: Rand[Int] = _.nextInt
-
-  def unit[A](a: A): Rand[A] =
-    rng => (a, rng)
-
-
-
-  println(int)
+  import ch06.SimpleRNG._
+  println(int(SimpleRNG(42)))/**/
+  //  println(Int.MaxValue)
+  //  println(Int.MinValue)
+  println()
+  println(double(SimpleRNG(42)))
+  println(doubleMap(SimpleRNG(42))) //slighty different as implementations use slightly different algorithms
+  println()
+  println(doubleInt(SimpleRNG(42)))
+  println(doubleIntMap2(SimpleRNG(42)))
+  println()
+  println(ints(5)(SimpleRNG(42)))
+  println(intsSequence(5)(SimpleRNG(42)))
 }
