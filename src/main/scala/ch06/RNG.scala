@@ -65,12 +65,25 @@ object SimpleRNG {
     loop(count, rng, List.empty)
   }
 
+  type Rand[+A] = RNG => (A, RNG)
+
 }
 
 object Main extends App {
   println(SimpleRNG(42).nextInt)
   println(SimpleRNG(42).nextInt)
 
-  println(Int.MaxValue)
-  println(Int.MinValue)
+//  println(Int.MaxValue)
+//  println(Int.MinValue)
+
+  import ch06.SimpleRNG.Rand
+
+  val int: Rand[Int] = _.nextInt
+
+  def unit[A](a: A): Rand[A] =
+    rng => (a, rng)
+
+
+
+  println(int)
 }
