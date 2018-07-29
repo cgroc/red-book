@@ -16,6 +16,9 @@ case class SimpleRNG(seed: Long) extends RNG {
 object SimpleRNG {
 
   // Exercise 6.1
+  // Note that this has the form RNG => (Int, RNG), I think I prefer it for the signature to
+  // actually look like this:
+  // def nonNegativeInt: RNG => (Int, RNG), or even Rand[Int] (but I actually find the latter confising too :'(
   def nonNegativeInt(rng: RNG): (Int, RNG) = {
     val (nextInt, nextRng) = rng.nextInt
     if (nextInt == Int.MinValue)
@@ -119,6 +122,24 @@ object SimpleRNG {
 
   def intsSequence(count: Int)(rng: RNG): (List[Int], RNG) =
     sequence[Int](List.fill(count)(int))(rng)
+
+  // Exercise 6.8
+  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] =
+    rng => {
+      val (a, rnga): (A, RNG) = f(rng)
+      g(a)(rnga)
+    }
+
+  def nonNegativeLessThan(n: Int): Rand[Int] =
+    flatMap[Int, Int](nonNegativeInt) {
+      i => { // this will have signature Int => Int => (RNG, Int)
+        val mod = i % n
+        if (i + (n-1) - mod >= 0) unit(mod) else nonNegativeLessThan(n)
+      }
+    }
+
+  // Exercise 6.9
+
 }
 
 object Main extends App {
