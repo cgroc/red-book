@@ -139,6 +139,37 @@ object SimpleRNG {
     }
 
   // Exercise 6.9
+  def mapViaFlatMap[A, B](randA: Rand[A])(f: A => B): Rand[B] =
+    flatMap(randA) {
+      a => unit(f(a))
+    }
+
+  def map2ViaFlatMap[A, B, C](randA: Rand[A], randB: Rand[B])(f: (A, B) => C): Rand[C] =
+    flatMap(randA) {
+      a => flatMap(randB) {
+        b => unit(f(a, b))
+      }
+    }
+
+  /*
+   * In the book solutions they do it this way:
+   *
+   * def _map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+   *    flatMap(ra)(a => map(rb)(b => f(a, b)))
+   *
+   * Let's try a bit of referential transparency and see where we get
+   *
+   * def _map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+   *    flatMap(ra)(a =>
+   *      flatMap(rb) {
+             b => unit(b => f(a, b))
+    }
+   *    )
+   *
+   * this is what I have above anyway!
+   *
+   */
+
 
 }
 
