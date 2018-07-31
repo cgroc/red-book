@@ -25,11 +25,15 @@ final case class State[S, +A](run: S => (A, S)) {
       }
     )
 
-  def sequence = ???
+
 }
 
 object State {
-  def unit[A, S](a: A): State[S, A] = State(s => (a, s))
+  def unit[S, A](a: A): State[S, A] = State(s => (a, s))
+
+  def sequence[S, A](l: List[State[S, A]]): State[S, List[A]] =
+    l.foldRight(unit[S, List[A]](List()))((f, acc) => f.map2(acc)(_ :: _))
+
 }
 
 
