@@ -2,6 +2,11 @@ package ch06
 
 sealed trait CandyMachine {
 
+  val processInput: Input => CandyMachine = { // ugh
+    case Coin => insertCoin._2
+    case Turn => turnHandle._2
+  }
+
   def insertCoin: (CoinInsertionResult, CandyMachine)
   def turnHandle: (CandyDispensingResult, CandyMachine)
 }
@@ -41,6 +46,11 @@ case class EmptyCandyMachine(coins: Int) extends CandyMachine {
     (CandyDispensingResult.Failure("Machine is empty"), this)
 }
 
+sealed trait Input
+
+case object Coin extends Input
+case object Turn extends Input
+
 //TODO: Is there any need for this?
 sealed trait CoinInsertionResult
 
@@ -57,4 +67,19 @@ object CandyDispensingResult{
 
   case object Success extends CandyDispensingResult
   case class Failure(reason: String) extends CandyDispensingResult //TODO: Something better than a string?
+}
+
+object Foo {
+
+  def simulateMachine(candyMachine: CandyMachine, inputs: List[Input]): CandyMachine = {
+    inputs.foldLeft[CandyMachine](candyMachine) {
+      (c, i) => c.processInput(i)
+    }
+  }
+}
+
+object Bar extends App {
+
+  println(Foo.simulateMachine(LockedCandyMachine(10, 0), List(Coin, Turn, Coin, Turn, Coin, Turn)))
+  println(Foo.simulateMachine(EmptyCandyMachine(5), List(Coin, Turn, Coin, Turn, Coin, Turn)))
 }
