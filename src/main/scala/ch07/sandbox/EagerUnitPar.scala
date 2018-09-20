@@ -26,7 +26,7 @@ object EagerUnitPar {
     val crap = new DisgustingCrap[A](a)
     val t = new Thread(
       new Runnable {
-        override def run(): Unit = {'\''
+        override def run(): Unit = {
           crap.go()
         }
       }
