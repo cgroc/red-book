@@ -5,8 +5,11 @@ object EagerUnitPar {
   case class DisgustingCrap[A](a: A) {
     var maybeCrap: Option[A] = None
 
-    def go(): Unit =
+    def go(): Unit = {
+      println(s"Computing $a")
+      Thread.sleep(2000)
       maybeCrap = Some(a)
+    }
 
     def get(): A = {
       println(s"Getting $a")
@@ -23,9 +26,7 @@ object EagerUnitPar {
     val crap = new DisgustingCrap[A](a)
     val t = new Thread(
       new Runnable {
-        override def run(): Unit = {
-          println(s"Computing ${crap.a}")
-          Thread.sleep(2000)
+        override def run(): Unit = {'\''
           crap.go()
         }
       }
