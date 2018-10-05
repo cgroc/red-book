@@ -2,7 +2,7 @@ package ch07.sandbox
 
 object LazyUnitPar {
 
-  case class DisgustingCrap[A](a: A) {
+  case class TerriblePar[A](a: A) {
     var maybeCrap: Option[A] = None
 
     def go(): Unit = {
@@ -20,10 +20,10 @@ object LazyUnitPar {
 
   }
 
-  type Par[A] = DisgustingCrap[A]
+  type Par[A] = TerriblePar[A]
 
   def unit[A](a: => A): Par[A] = {
-    new DisgustingCrap[A](a)
+    new TerriblePar[A](a)
   }
 
   def get[A](a: Par[A]): A = {

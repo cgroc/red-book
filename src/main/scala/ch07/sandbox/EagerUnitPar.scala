@@ -2,7 +2,7 @@ package ch07.sandbox
 
 object EagerUnitPar {
 
-  case class DisgustingCrap[A](a: A) {
+  case class TerriblePar[A](a: A) {
     var maybeCrap: Option[A] = None
 
     def go(): Unit = {
@@ -20,13 +20,13 @@ object EagerUnitPar {
 
   }
 
-  type Par[A] = DisgustingCrap[A]
+  type Par[A] = TerriblePar[A]
 
   def unit[A](a: => A): Par[A] = {
-    val crap = new DisgustingCrap[A](a)
+    val crap = new TerriblePar[A](a)
     val t = new Thread(
       new Runnable {
-        override def run(): Unit = {'\''
+        override def run(): Unit = {
           crap.go()
         }
       }
