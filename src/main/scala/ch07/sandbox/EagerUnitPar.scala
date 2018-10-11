@@ -3,19 +3,19 @@ package ch07.sandbox
 object EagerUnitPar {
 
   case class TerriblePar[A](a: A) {
-    var maybeCrap: Option[A] = None
+    var maybe: Option[A] = None
 
     def go(): Unit = {
       println(s"Computing $a")
       Thread.sleep(2000)
-      maybeCrap = Some(a)
+      maybe = Some(a)
     }
 
     def get(): A = {
       println(s"Getting $a")
-      while (maybeCrap == None)
+      while (maybe == None)
         Thread.sleep(200)
-      maybeCrap.get
+      maybe.get
     }
 
   }
