@@ -1,6 +1,8 @@
 package ch07
 
+import java.util
 import java.util.concurrent._
+
 import language.implicitConversions
 
 //object Par {

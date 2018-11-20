@@ -4,7 +4,7 @@ import java.util.concurrent._
 import language.implicitConversions
 
 
-object Par {
+object Blocking {
   type Par[A] = ExecutorService => Future[A]
 
   def run[A](s: ExecutorService)(a: Par[A]): Future[A] = a(s)
@@ -137,7 +137,7 @@ object Par {
 }
 
 object Examples {
-  import Par._
+  import Blocking._
   def sum(ints: IndexedSeq[Int]): Int = // `IndexedSeq` is a superclass of random-access sequences like `Vector` in the standard library. Unlike lists, these sequences provide an efficient `splitAt` method for dividing them into two parts at a particular index.
     if (ints.size <= 1)
       ints.headOption getOrElse 0 // `headOption` is a method defined on all collections in Scala. We saw this function in chapter 3.

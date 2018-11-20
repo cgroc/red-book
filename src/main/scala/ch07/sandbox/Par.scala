@@ -68,31 +68,40 @@ object Par {
   def map[A, B](a: Par[A])(f: A => B): Par[B] =
     map2(a, unit(()))((a, _) => f(a))
 
+  def sequence[A](ps: List[Par[A]]): Par[List[A]] =
+    ps.foldRight[Par[List[A]]](unit(List.empty))((a1, a2) => map2(a1, a2)(_ :: _))
 
-  def sequence[A](ps: List[Par[A]]): Par[List[A]] = es => {
+  def sequence2[A](ps: List[Par[A]]): Par[List[A]] = es => {
     val res: immutable.Seq[A] = ps.map(par => par(es)).map(_.get)
     UnitFuture(res.toList)
   }
-
-  def sequence2[A](ps: List[Par[A]]): Par[List[A]] =
-    ps.foldRight[Par[List[A]]](unit(List.empty))((a1, a2) => map2(a1, a2)(_ :: _))
 
   def sequence3[A](ps: List[Par[A]]): Par[List[A]] =
     ps match {
       case Nil => Par.unit(List.empty)
       case h :: Nil => map(h)(List.apply(_))
       case _ =>
-        val (l,r) = ps.splitAt(ps.length / 2)
+        val (l, r) = ps.splitAt(ps.length / 2)
         map2(sequence3(l), sequence3(r))(_ ++ _)
     }
 
+  def parMap[A, B](ps: List[A])(f: A => B): Par[List[B]] = fork {
+    val fbs: List[Par[B]] = ps.map(asyncF(f))
+    sequence(fbs)
+  }
 
-
-  //  def parMap[A,B](ps: List[A])(f: A => B): Par[List[B]] = fork {
-  //    val fbs: List[Par[B]] = ps.map(asyncF(f))
-  //    sequence(fbs)
-  //  }
-
+  def parFilter[A](as: List[A])(f: A => Boolean): Par[List[A]] = {
+    val wot: List[Par[List[A]]] = as.map(
+      asyncF(
+        a =>
+          if (f(a))
+            List(a)
+          else
+            List.empty
+      ))
+    val ugh: Par[List[List[A]]] = sequence(wot)
+    map(ugh)(_.flatten)
+  }
 
 }
 
